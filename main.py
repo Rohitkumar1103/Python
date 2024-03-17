@@ -1,48 +1,32 @@
-import random
-
-from hangman_art import logo
-from hangman_words import word_list
-from hangman_art import stages
-
-
-end_of_game = False
-lives = 6
-chosen_word = random.choice(word_list)
-word_length = len(chosen_word)
+import os
+os.system('cls')
+from art import logo
 
 print(logo)
 
-print(chosen_word)
+bids = {}
+bidding_finished = False
 
-display = []
-for _ in range(word_length):
-  display += "_"
-print(display)
+def find_highest_bidder(bidding_record):
+  highest_bid = 0
+  winner = ""
+  for bidder in bidding_record:
+    bid_amount = bidding_record[bidder]
+    if bid_amount > highest_bid:
+      highest_bid = bid_amount
+      winner = bidder
+  print(f"The winner is {winner} with a bid of ${highest_bid}")
+
+while bidding_finished == False :
+  name = input("\nWhat is your name?: ")
+  price = int(input("What is your bid? $"))
+  bids[name] = price
+
+  should_continue = input("Are there any other bidders? Type 'yes' or 'no': ").lower()
+  if should_continue == 'no':
+    bidding_finished = True
+    find_highest_bidder(bids)
+  elif should_continue == 'yes':
+    os.system('cls')
 
 
-
-while not end_of_game:
-  guess = input("Guess a letter: ").lower()
-
-  if guess in display:
-    print(f"You've already guessed {guess}")
-
-  for position in range(word_length):
-    letter = chosen_word[position]
-    if letter == guess:
-      display[position] = letter
-
-  print(display)
-
-  if guess not in chosen_word:
-    print(f"You've guessed {guess}, that's not in the word. You loose a life.")
-    lives -=1
-    if lives == 0:
-      end_of_game = True
-      print("You Lose")
-
-  if "_" not in display:
-    end_of_game = True
-    print("Congratulations, you won!")
-
-  print(stages[lives])
