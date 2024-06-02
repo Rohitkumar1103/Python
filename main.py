@@ -1,32 +1,50 @@
-import os
-os.system('cls')
 from art import logo
+from art import vs
+from game_data import data
+import random
+import os
+
+def format_data(account):
+  account_name = account["name"]
+  account_description = account["description"]
+  account_country = account["country"]
+  return f"{account_name}, a {account_description}, from {account_country}"
+
+def check_answer(guess, a_follower, b_follower):
+  if a_follower > b_follower:
+    return guess == "a"
+  else:
+    return guess == "b"
 
 print(logo)
+score =0
 
-bids = {}
-bidding_finished = False
+game_should_continue = True
+account_b = random.choice(data)
 
-def find_highest_bidder(bidding_record):
-  highest_bid = 0
-  winner = ""
-  for bidder in bidding_record:
-    bid_amount = bidding_record[bidder]
-    if bid_amount > highest_bid:
-      highest_bid = bid_amount
-      winner = bidder
-  print(f"The winner is {winner} with a bid of ${highest_bid}")
+while game_should_continue:
 
-while bidding_finished == False :
-  name = input("\nWhat is your name?: ")
-  price = int(input("What is your bid? $"))
-  bids[name] = price
+  account_a = account_b
+  account_b = random.choice(data)
 
-  should_continue = input("Are there any other bidders? Type 'yes' or 'no': ").lower()
-  if should_continue == 'no':
-    bidding_finished = True
-    find_highest_bidder(bids)
-  elif should_continue == 'yes':
-    os.system('cls')
+  while account_a == account_b:
+    account_b = random.choice(data)
 
+  print(f"Compare A: {format_data(account_a)}.")
+  print(vs)
+  print(f"Against B: {format_data(account_b)}.")
 
+  guess = input("Who has more followers? Type 'A' or 'B': ").lower()
+
+  a_follower_count = account_a["follower_count"]
+  b_follower_count = account_b["follower_count"]
+
+  is_correct = check_answer(guess, a_follower_count, b_follower_count)
+  os.system('cls')
+  
+  if is_correct:
+    score +=1
+    print(f"You're right!. Currents score: {score}.")
+  else:
+    game_should_continue = False
+    print(f"Sorry, that's wrong. Final score: {score}. ")
